@@ -51,9 +51,12 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Game\Food.cs" />
-    <Compile Include="Game\Game.cs" />
-    <Compile Include="Game\Snake.cs" />
+    <Compile Include="game\Engine2d.cs" />
+    <Compile Include="game\Food.cs" />
+    <Compile Include="game\Game.cs" />
+    <Compile Include="game\GameObject.cs" />
+    <Compile Include="game\GameVisitor.cs" />
+    <Compile Include="game\Snake.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormMain.resx">

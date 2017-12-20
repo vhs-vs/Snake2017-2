@@ -7,23 +7,22 @@ namespace Snake
     public partial class FormMain : Form
     {
         Game game;
+        Engine2d engine2D;
 
         public FormMain()
         {
             InitializeComponent();
 
             game = new Game();
+            engine2D = new Engine2d { Game = game, Canvas = canvas };
 
             ButtonStart.Click += ButtonStart_Click;
+            ButtonStart.Focus();
             this.KeyDown += FormMain_KeyDown;
-            Timer.Tick += Timer_Tick;
-            canvas.Paint += Canvas_Paint;
+            this.KeyPreview = true;
+            Timer.Tick += Timer_Tick;                
         }
 
-        private void Canvas_Paint(object sender, PaintEventArgs e)
-        {
-           //todo: Spielinhalt neu malen
-        }
 
         private void FormMain_KeyDown(object sender, KeyEventArgs e)
         {
@@ -33,14 +32,25 @@ namespace Snake
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            //Tick an Spiel weiterreichen            
-            game.Tick();
+            if (game.Over)
+            {
+                Timer.Enabled = false;
+                ButtonStart.Visible = true;
+            }
+            else
+            {
+                //Tick an Spiel weiterreichen            
+                game.Tick();
+                engine2D.Refresh();
+            }
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
         {
             //Spiel starten
             game.Start();
+            Timer.Enabled = true;
+            ButtonStart.Visible = false;
         }
     }
 }

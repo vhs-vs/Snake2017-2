@@ -17,8 +17,9 @@ namespace Snake.game
                 //Beim Setzen einer Picturebox wird das Paint-Event abboniert
                 canvas = value;
                 canvas.Paint += Canvas_Paint;
+                canvas.Resize += delegate { canvas.Refresh(); };
             }
-        }
+        }      
         public Game Game { get; set; }
         public int Scaling { get; set; }
         public Point Offset { get; set; }
@@ -31,7 +32,7 @@ namespace Snake.game
         {
             //Sicheren des Grafik-Context, Berechnen von Scaling und Offset
             Device = e.Graphics;
-            Scaling = Math.Min((canvas.Width / Game.Width), (canvas.Height / Game.Height));
+            Scaling = Math.Min(((canvas.Width -20)/ Game.Width), ((canvas.Height -20)/ Game.Height));
             Offset = new Point((canvas.Width - Game.Width * Scaling) / 2, (canvas.Height - Game.Height * Scaling) / 2);
 
             //Besucher-Zyklus starten

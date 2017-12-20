@@ -15,7 +15,10 @@ namespace Snake.game
             Direction = direction;
             Body = new List<Point>();
             Body.Add(start);
+            Dead = false;
         }
+
+        private int GrowCount = 0;
 
         public List<Point> Body { get; set; }
         /// <summary>
@@ -23,18 +26,43 @@ namespace Snake.game
         /// </summary>
         public Direction Direction { get; private set; }
 
-		public override bool Accept(GameVisitor visitor)
-		{
-			visitor.Visit(this);
-			return true;
-		}
+        /// <summary>
+        /// Kopf der Schlange
+        /// </summary>
+        public Point Head => Body?.First() ?? Point.Empty;
 
-		/// <summary>
-		/// Die Schlange bewegt sich in die aktuelle Richtung um eine Position weiter
-		/// </summary>
-		public void Move()
+        public bool Dead { get; private set; }
+
+        public override bool Accept(GameVisitor visitor)
         {
-            Point newHead = new Point(Body.First().X, Body.First().Y);
+            visitor.Visit(this);
+            return true;
+        }
+
+        /// <summary>
+        /// lässt die Schlange wachsen
+        /// </summary>
+        public void Grow()
+        {
+            GrowCount++;
+        }
+
+   
+
+        /// <summary>
+        /// Prüft ob der Kopf der Schlange mit einem Punkt im Spiel kollidiert
+        /// </summary>
+        public bool TestCollision(Point p)
+        {
+            return Head.Equals(p);
+        }
+
+        /// <summary>
+        /// Die Schlange bewegt sich in die aktuelle Richtung um eine Position weiter
+        /// </summary>
+        public void Move()
+        {
+            Point newHead = new Point(Head.X, Head.Y);
             switch (Direction)
             {
                 case Direction.North: newHead.Y -= 1;
@@ -47,8 +75,18 @@ namespace Snake.game
                     break;
             }
 
+            if (GrowCount > 0)
+            {
+                GrowCount--;
+            }
+            else
+            {
+                Body.Remove(Body.Last());
+            }
+
+            Dead = Body.Exists(p => p.Equals(newHead));
+
             Body.Insert(0, newHead);
-            Body.Remove(Body.Last());
         }
 
         public void TurnLeft()

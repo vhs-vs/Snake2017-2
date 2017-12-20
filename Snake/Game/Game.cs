@@ -15,17 +15,40 @@ namespace Snake.game
         public Snake Snake { get; set; }
         public Food Food { get; set; }
         public bool Over { get; internal set; } = true;
+        private Random rng = new Random();
 
         public void Start()
         {
             Snake = new Snake(Direction.East, new Point(10, 10));
-            Food = new Food { Position = new Point(3, 3) };
+            CreateFood();
             Over = false;
         }
 
         public void Tick()
         {
             Snake.Move();
+            if (Snake.TestCollision(Food.Position))
+            {
+                Snake.Grow();
+                CreateFood();
+            }
+            if (! new Rectangle(0, 0, 20, 20).Contains(Snake.Head))
+            {
+                Over = true;
+            }
+            if (Snake.Dead)
+            {
+                Over = true;
+            }
+        }
+
+        private void CreateFood()
+        {
+            Food = new Food { Position = new Point(rng.Next(0, Width), rng.Next(0, Height)) };
+            if (Snake.Body.Exists(p => p.Equals(Food.Position)))
+            {
+                CreateFood();
+            }
         }
 
         public void HandleKey(Keys key)
